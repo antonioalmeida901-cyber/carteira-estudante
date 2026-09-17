@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env
+.env.local
+
+# Banco de dados local
+dev.db
+prisma/dev.db
+*.db
+*.db-journal
+
+# Fotos dos estudantes
+public/uploads/*
