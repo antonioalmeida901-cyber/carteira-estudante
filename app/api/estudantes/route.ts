@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 import fs from "fs/promises";
 import path from "path";
 
@@ -13,6 +14,17 @@ export async function POST(request: Request) {
     const instituicao = formData.get("instituicao") as string;
     const curso = formData.get("curso") as string;
     const matricula = formData.get("matricula") as string;
+    const email = (formData.get("email") as string)?.trim().toLowerCase();
+    const senha = formData.get("senha") as string;
+
+    if (!email || !senha) {
+      return NextResponse.json(
+        { erro: "E-mail e senha são obrigatórios." },
+        { status: 400 }
+      );
+    }
+
+    const senhaHash = await bcrypt.hash(senha, 10);
 
     const arquivoFoto = formData.get("foto") as File | null;
 
@@ -49,6 +61,8 @@ export async function POST(request: Request) {
         instituicao,
         curso,
         matricula,
+        email,
+        senha: senhaHash,
         foto,
       },
     });

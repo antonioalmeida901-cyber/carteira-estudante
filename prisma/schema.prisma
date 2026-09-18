@@ -21,4 +21,6 @@ model Estudante {
   validade       DateTime?
   criadoEm       DateTime @default(now())
   atualizadoEm   DateTime @updatedAt
+  email          String?  @unique
+  senha          String?
 }

@@ -27,7 +27,14 @@ export default function Home() {
               href="/login"
               className="block w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-4 rounded-xl"
             >
-              🔐 Entrar
+              🔐 Acesso Administrativo
+            </a>
+
+            <a
+              href="/login-estudante"
+              className="block w-full text-center bg-green-600 hover:bg-green-700 text-white font-semibold py-4 rounded-xl"
+            >
+              🎓 Acesso do Estudante
             </a>
 
             <a
