@@ -1,52 +1,31 @@
 import { prisma } from "@/lib/prisma";
-import { verificarSessao } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import QRCode from "../QRCode";
 
-export default async function CarteiraIndividual({
+export default async function CarteiraPorNumero({
   params,
 }: {
   params: Promise<{ numero: string }>;
 }) {
   const { numero } = await params;
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get("estudante_sessao")?.value;
-
-  if (!token) {
-    redirect("/login-estudante");
-  }
-
-  const sessao = await verificarSessao(token);
-
-  if (!sessao) {
-    redirect("/login-estudante");
-  }
-
   const estudante = await prisma.estudante.findUnique({
     where: {
-      id: sessao.estudanteId,
+      numeroCarteira: numero,
     },
   });
 
-  if (
-    !estudante ||
-    estudante.status !== "APROVADO" ||
-    estudante.numeroCarteira !== numero
-  ) {
+  if (!estudante) {
     return (
       <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
         <div className="bg-white rounded-3xl shadow-xl p-8 text-center max-w-md w-full">
-          <div className="text-5xl mb-4">❌</div>
+          <div className="text-5xl mb-4">🎓</div>
 
           <h1 className="text-2xl font-bold text-gray-800">
             Carteira não encontrada
           </h1>
 
           <p className="text-gray-500 mt-3">
-            A carteira informada não existe ou não pertence ao estudante
-            autenticado.
+            Não foi encontrada uma carteira com este número.
           </p>
 
           <a
@@ -64,8 +43,7 @@ export default async function CarteiraIndividual({
     ? new Date(estudante.validade).toLocaleDateString("pt-BR")
     : "Não definida";
 
-  const urlValidacao =
-    "http://localhost:3000/validar?numero=" + estudante.numeroCarteira;
+  const urlValidacao = `/validar?numero=${estudante.numeroCarteira}`;
 
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -92,7 +70,7 @@ export default async function CarteiraIndividual({
               {estudante.foto ? (
                 <img
                   src={estudante.foto}
-                  alt={"Foto de " + estudante.nome}
+                  alt={`Foto de ${estudante.nome}`}
                   className="w-32 h-32 object-cover rounded-2xl"
                 />
               ) : (
@@ -107,8 +85,20 @@ export default async function CarteiraIndividual({
                 {estudante.nome}
               </h2>
 
-              <span className="inline-block mt-2 bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold">
-                ✓ APROVADO
+              <span
+                className={`inline-block mt-2 px-4 py-1 rounded-full text-sm font-bold ${
+                  estudante.status === "APROVADO"
+                    ? "bg-green-100 text-green-700"
+                    : estudante.status === "REJEITADO"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-yellow-100 text-yellow-700"
+                }`}
+              >
+                {estudante.status === "APROVADO"
+                  ? "✓ APROVADO"
+                  : estudante.status === "REJEITADO"
+                  ? "✕ REJEITADO"
+                  : "PENDENTE"}
               </span>
             </div>
 
@@ -120,7 +110,7 @@ export default async function CarteiraIndividual({
                 </p>
 
                 <p className="font-bold text-gray-800">
-                  {estudante.numeroCarteira}
+                  {estudante.numeroCarteira || "Não definido"}
                 </p>
               </div>
 
@@ -176,14 +166,10 @@ export default async function CarteiraIndividual({
 
             </div>
 
-            <QRCode valor={urlValidacao} />
-
-            <a
-              href="/api/logout?tipo=estudante"
-              className="block w-full mt-6 text-center bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl"
-            >
-              🚪 Sair
-            </a>
+            {estudante.status === "APROVADO" &&
+              estudante.numeroCarteira && (
+                <QRCode valor={urlValidacao} />
+              )}
 
           </div>
 
