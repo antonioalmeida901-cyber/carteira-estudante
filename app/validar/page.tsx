@@ -55,8 +55,16 @@ export default async function Validar({
 
               <div className="text-center mb-6">
 
-                <div className="w-28 h-28 bg-gray-200 rounded-2xl mx-auto flex items-center justify-center text-5xl mb-4">
-                  👤
+                <div className="w-28 h-28 bg-gray-200 rounded-2xl mx-auto overflow-hidden flex items-center justify-center text-5xl mb-4">
+                  {estudante.foto ? (
+                    <img
+                      src={estudante.foto}
+                      alt={`Foto de ${estudante.nome}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    "👤"
+                  )}
                 </div>
 
                 <h2 className="text-2xl font-bold text-gray-800">
