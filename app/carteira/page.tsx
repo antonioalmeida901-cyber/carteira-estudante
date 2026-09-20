@@ -40,20 +40,18 @@ export default async function Carteira() {
     ? new Date(estudante.validade).toLocaleDateString("pt-BR")
     : "Não definida";
 
-  const urlValidacao = `http://localhost:3000/validar?numero=${estudante.numeroCarteira}`;
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  const urlValidacao = `${baseUrl}/validar?numero=${estudante.numeroCarteira}`;
 
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-
       <div className="w-full max-w-md">
-
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
 
           <div className="bg-blue-700 text-white p-6 text-center">
-
-            <div className="text-5xl mb-3">
-              🎓
-            </div>
+            <div className="text-5xl mb-3">🎓</div>
 
             <h1 className="text-2xl font-bold">
               CARTEIRA DO ESTUDANTE
@@ -62,21 +60,17 @@ export default async function Carteira() {
             <p className="text-blue-100 mt-1">
               Identificação Estudantil Digital
             </p>
-
           </div>
 
           <div className="p-6">
 
             <div className="flex justify-center mb-6">
-
               <div className="w-32 h-32 bg-gray-200 rounded-2xl flex items-center justify-center text-5xl">
                 👤
               </div>
-
             </div>
 
             <div className="text-center mb-6">
-
               <h2 className="text-2xl font-bold text-gray-800">
                 {estudante.nome}
               </h2>
@@ -84,7 +78,6 @@ export default async function Carteira() {
               <span className="inline-block mt-2 bg-green-100 text-green-700 px-4 py-1 rounded-full text-sm font-bold">
                 ✓ APROVADO
               </span>
-
             </div>
 
             <div className="space-y-4">
@@ -162,9 +155,7 @@ export default async function Carteira() {
           </div>
 
         </div>
-
       </div>
-
     </main>
   );
 }
