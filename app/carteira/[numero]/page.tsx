@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import QRCode from "../QRCode";
 
@@ -43,7 +44,12 @@ export default async function CarteiraPorNumero({
     ? new Date(estudante.validade).toLocaleDateString("pt-BR")
     : "Não definida";
 
-  const urlValidacao = `/validar?numero=${estudante.numeroCarteira}`;
+  const headersList = await headers();
+
+  const host = headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "https";
+
+  const urlValidacao = `${protocol}://${host}/validar?numero=${estudante.numeroCarteira}`;
 
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
