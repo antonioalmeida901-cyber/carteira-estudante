@@ -40,10 +40,7 @@ export default async function Carteira() {
     ? new Date(estudante.validade).toLocaleDateString("pt-BR")
     : "Não definida";
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-  const urlValidacao = `${baseUrl}/validar?numero=${estudante.numeroCarteira}`;
+  const urlValidacao = `/validar?numero=${estudante.numeroCarteira}`;
 
   return (
     <main className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
