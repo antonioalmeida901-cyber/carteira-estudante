@@ -8,19 +8,19 @@ datasource db {
 }
 
 model Estudante {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   nome           String
-  cpf            String   @unique
+  cpf            String    @unique
   dataNascimento DateTime
   instituicao    String
   curso          String
   matricula      String
   foto           String?
-  numeroCarteira String?  @unique
-  status         String   @default("PENDENTE")
+  numeroCarteira String?   @unique
+  status         String    @default("PENDENTE")
   validade       DateTime?
-  criadoEm       DateTime @default(now())
-  atualizadoEm   DateTime @updatedAt
-  email          String?  @unique
+  criadoEm       DateTime  @default(now())
+  atualizadoEm   DateTime  @updatedAt
+  email          String?   @unique
   senha          String?
 }
