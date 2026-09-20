@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import fs from "fs/promises";
-import path from "path";
 
 export async function POST(request: Request) {
   try {
@@ -31,26 +29,12 @@ export async function POST(request: Request) {
     let foto: string | undefined;
 
     if (arquivoFoto && arquivoFoto.size > 0) {
-      const extensao = arquivoFoto.name.split(".").pop() || "jpg";
-      const nomeArquivo = `${Date.now()}.${extensao}`;
-
-      const pastaFotos = path.join(
-        process.cwd(),
-        "public",
-        "uploads"
-      );
-
-      await fs.mkdir(pastaFotos, { recursive: true });
-
       const bytes = await arquivoFoto.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      const base64 = Buffer.from(bytes).toString("base64");
 
-      await fs.writeFile(
-        path.join(pastaFotos, nomeArquivo),
-        buffer
-      );
+      const tipo = arquivoFoto.type || "image/jpeg";
 
-      foto = `/uploads/${nomeArquivo}`;
+      foto = `data:${tipo};base64,${base64}`;
     }
 
     const estudante = await prisma.estudante.create({
